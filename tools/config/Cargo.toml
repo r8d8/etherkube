@@ -1,5 +1,5 @@
 [package]
-name = "config"
+name = "etherkube"
 version = "0.1.0"
 authors = ["splix <splix@ethereumclassic.org>"]
 

@@ -13,14 +13,14 @@ GCLOUD_PROJECT_ID=$($BINS/config gcloud get-project-id)
 CLUSTER_ID=$($BINS/config gcloud get-cluster-id)
 ZONE_ID=$($BINS/config gcloud get-zone-id)
 
-if [ -z "$GCLOUD_PROJECT_ID" ]; then
+ if [ -z "$GCLOUD_PROJECT_ID" ]; then
     echo "GCLOUD_PROJECT_ID is not set"
     exit 1
 fi
 
 echo "Run against $GCLOUD_PROJECT_ID on cluster $CLUSTER_ID"
 
-function prepare {
+prepare() {
     NODE=$1
     FILE=$(echo "$K8S/node-\${node_type}.rc.yml" | $BINS/config -n $NODE template)
     echo "Deploy kubes $NODE from $FILE"
@@ -30,7 +30,7 @@ function prepare {
         | kubectl create -f -
 }
 
-function build {
+build() {
     NAME=$1
     ORG=etherkube
     echo "Build docker container for: $ORG/$NAME from ./containers/$NAME"
@@ -38,7 +38,7 @@ function build {
     docker build -t $ORG/$NAME ./containers/$NAME
 }
 
-function push_docker {
+push_docker() {
     NAME=$1
     ORG=etherkube
 
@@ -48,7 +48,7 @@ function push_docker {
     gcloud docker -- push gcr.io/$GCLOUD_PROJECT_ID/$NAME:$VERSION
 }
 
-function deploy {
+deploy() {
     NODE=$1
     DOCKER_TYPE=$(echo "\${node_type}-\${node_source}" | $BINS/config -n $NODE template)
 
@@ -57,14 +57,14 @@ function deploy {
     prepare $NODE
 }
 
-function cluster {
+cluster() {
     gcloud config set project $GCLOUD_PROJECT_ID
     gcloud config set compute/zone $ZONE_ID
     gcloud config set container/cluster $CLUSTER_ID
     gcloud container clusters get-credentials $CLUSTER_ID
 }
 
-function control_deploy {
+control_deploy() {
     NODE=$1
     ORG=etherkube
     case "$NODE" in
@@ -80,7 +80,7 @@ function control_deploy {
     echo "Pod $NODE has been deployed."
 }
 
-function control_start_service {
+control_start_service() {
     NODE=$1
     case "$NODE" in
         nginx)
@@ -93,13 +93,13 @@ function control_start_service {
     echo "Service $NODE has been started."
 }
 
-function control_stop_service {
+control_stop_service() {
     NODE=$1
     kubectl delete service $NODE
     echo "Service $NODE has been stopped."
 }
 
-function control_proxy {
+control_proxy() {
     SERVICE=$1
     kubectl proxy
     echo "Open your browser and go to : http://localhost:8001/api/v1/proxy/namespaces/default/services/$NODE"
@@ -110,6 +110,7 @@ case "$COMMAND" in
         build $2
         ;;
     deploy)
+
         deploy $2
         kubectl get pods -o wide
         ;;

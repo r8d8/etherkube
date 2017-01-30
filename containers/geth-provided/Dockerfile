@@ -1,9 +1,10 @@
 FROM ubuntu
 
-RUN mkdir /opt/geth
+
+RUN mkdir -p /opt/geth
 ADD geth /opt/geth/
 
-COPY start.sh /
+COPY ./start.sh /
 RUN chmod +x /start.sh
 
 EXPOSE 8545
@@ -13,4 +14,4 @@ VOLUME /data
 
 WORKDIR /opt/geth
 
-CMD ["/start.sh"]
+ENTRYPOINT ["/start.sh"]

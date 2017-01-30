@@ -1,4 +1,5 @@
-FROM ubuntu
+FROM alpine:3.4
+
 
 RUN apt-get update && apt-get -y install wget unzip
 

@@ -102,7 +102,7 @@ fn main() {
         );
     let matches = opts.get_matches();
 
-    let conf = read_config("etherkube-config.yaml").unwrap();
+    let conf = read_config("/home/k2/Workshop/etherkube/etherkube-config.yaml").unwrap();
 
     if let Some(gcloud) = matches.subcommand_matches("gcloud") {
         if let Some(_) = gcloud.subcommand_matches("get-project-id") {
