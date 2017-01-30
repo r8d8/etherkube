@@ -2,6 +2,7 @@
 *.iws
 *.log
 *.DS_Store
+*.idea
 Session.vim
 etherkube-config.yaml
 bin/config
